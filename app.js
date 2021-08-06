@@ -1,3 +1,4 @@
+const { render } = require('ejs');
 const express = require('express');
 const { result } = require('lodash');
 const  mongoose  = require('mongoose');
@@ -19,6 +20,7 @@ app.set('view engine', 'ejs');
 
 // middleware and static files
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'));
 
 //mongoose sandbox routes
@@ -48,30 +50,69 @@ app.get('/all-blogs', (req, res)=> {
     });
 });
 
-app.get('/', (req, res) => {
-    const blogs = [
-        {title: 'yoshi is a boy', snippet: 'lalalalalalalalalalalalalalala'},
-        {title: 'mario is a boy', snippet: 'lalalalalalalalalalalalalalala'},
-        {title: 'ranger is a boy', snippet: 'lalalalalalalalalalalalalalala'},
-    ];
-    
-    // res.send('<p> Home page</p>'); 
-    res.render('index', { titles: 'Home', blogs });
+// app.get('/single-blog', (req, res) => {
+//     Blog.findById('61006206f8d35f62b02db2c7')
+//     .then((result) => {
+//         res.send(result);
+//     })
+//     .catch((err) => {
+//      console.log(err);
+//     });
+// });
 
+app.get('/', (req, res) => {
+    res.redirect('/blogs');
 });
 
 app.get('/about', (req, res) => {
     
-    res.render('about', { titles: 'About' });
+    res.render('about', { title: 'About' });
 
 });
 
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { titles: 'Create a new blog' });
+//blog routes
+
+app.get('/blogs', (req, res) => {
+    Blog.find().sort({ createdAt: -1 })
+    .then((result) => {
+        res.render('index', { title: 'All Blogs', blogs: result })
+    })
+    .catch((err) => {
+     console.log(err);
+    });
+})
+
+app.post('/blogs', (req, res) =>{
+    const blog = new Blog(req.body);
+
+    blog.save()
+    .then((result)=> {
+        res.redirect('/blogs');
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+});
+
+app.get('/blogs/:id', (req, res)=> {
+    const id = req.params.id;
+    console.log(id);
+    Blog.findById(id)
+    .then(result => {
+        res.render('details', { blog: result, title: 'Blog Details'});
+    })
+    .catch(err => {
+        console.log(err);
+    });
+})
+
+
+app.get('/create', (req, res) => {
+    res.render('create', { title: 'Create a new blog' });
 });
 
 //404 page
 app.use((req, res) => {
-    res.status(404).render('404', { titles: '404' });
+    res.status(404).render('404', { title: '404' });
 
 });
