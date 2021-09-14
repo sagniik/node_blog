@@ -5,12 +5,13 @@ const  mongoose  = require('mongoose');
 const morgan = require('morgan');
 const Blog = require('./models/blog');
 const port = process.env.PORT || 3000
+const {mongourl} = require('./config/keys');
 
 //express app
 const app = express();
 
-const dbURI = 'mongodb+srv://illusion:1wdAwALJci1tDXw0@cluster0.xytld.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology:true})
+
+mongoose.connect(mongourl, { useNewUrlParser: true, useUnifiedTopology:true})
 .then((result) => app.listen(port))
 .catch((err)=> console.log(err));
 
