@@ -4,13 +4,14 @@ const { result } = require('lodash');
 const  mongoose  = require('mongoose');
 const morgan = require('morgan');
 const Blog = require('./models/blog');
+const port = process.env.PORT || 3000
 
 //express app
 const app = express();
 
 const dbURI = 'mongodb+srv://illusion:1wdAwALJci1tDXw0@cluster0.xytld.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology:true})
-.then((result) => app.listen(3000))
+.then((result) => app.listen(port))
 .catch((err)=> console.log(err));
 
 
@@ -50,15 +51,6 @@ app.get('/all-blogs', (req, res)=> {
     });
 });
 
-// app.get('/single-blog', (req, res) => {
-//     Blog.findById('61006206f8d35f62b02db2c7')
-//     .then((result) => {
-//         res.send(result);
-//     })
-//     .catch((err) => {
-//      console.log(err);
-//     });
-// });
 
 app.get('/', (req, res) => {
     res.redirect('/blogs');
