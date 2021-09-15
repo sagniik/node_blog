@@ -6,6 +6,9 @@ const morgan = require('morgan');
 const Blog = require('./models/blog');
 const port = process.env.PORT || 3000
 const {mongourl} = require('./config/keys');
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 //express app
 const app = express();
